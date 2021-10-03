@@ -1,0 +1,134 @@
+#include <stdio.h>
+#include <stdint.h>
+#include <stdbool.h>
+#include <string.h>
+#include "define.h"
+
+int list_to_int(int n, char input[], int sp){
+  int x=0, dec=0;
+  for(int p=0; n>=sp; n--,p++){ if(input[n] == ' '){--p; continue;}
+    x = input[n]-'0';
+    for(int j=p; j>0; j--){
+      x = x*10;
+    }
+    dec = dec+x;
+  }
+  return dec;
+}
+
+float list_to_real(int n1, int dot_index, int n2, char input[],int sp){
+  int x=0, i=0;
+  for(int p=0; n1>=sp; n1--,p++){ if(input[n1] == ' '){--p; continue;}
+    x = input[n1]-'0';
+    for(int j=p; j>0; j--){
+      x = x*10;
+    }
+    i = i+x;
+  }
+  float y=0.0, d=0.0;
+  for(int p=1,n=dot_index+1; n<=n2; n++,p++){ if(input[n] == ' '){--p; continue;}
+    y = input[n]-'0';
+    for(int j=p; j>0; j--){
+      y = y/10;
+    }
+    d = d+y;
+  }
+  return i+d;
+}
+
+int main() {
+  printf("Welcome to Simple Calculator\n");
+  printf("You can do simple calculations with this calculator\n");
+  printf("i.e. Addition, Subtraction, Multiplicatino and Division\n");
+  
+  char input[256]={0}, temp[256]={0}, operation;
+  float y=0.0, real1=0.0, real2=0.0, output=0.0;
+  int x=0, i1=0, i2=0, int1=0, int2=0, dot_index1=0, dot_index2=0;
+  bool is_float1 = false, is_float2 = false;
+  
+  printf("Input = ");
+  scanf("%s",input);
+
+  //printf("input[6] = %c\n",input[6]); 
+
+  for(int i=0; i<sizeof(input); i++){
+    if(input[i] == ' '){
+      for(int j=i; i<sizeof(input); j++){
+        input[j] = input[j+1];
+        if (input[j] == 0) input[j-1] = 0; break;
+      }
+    }
+    else if(input[i] == 0) break;
+  }
+
+  //printf("input = %s\n",input);
+  //printf("%lu\n",strlen(input));
+
+  for(i1=0; input[i1]!='+' && input[i1]!='-' && input[i1]!='*' && input[i1]!='/'; i1++){
+    //if(input[i1] == ' ') {printf("input[i1] = space\n");}//i1--; continue;} 
+    if(input[i1] == '.') {is_float1 = true; dot_index1=i1;} 
+    //printf("input[i1] = %c\n", input[i1]);
+  }
+  operation = input[i1];
+  i1=i1-1;
+  //printf("i1 = %d\n", i1);
+
+  for(i2=i1+2; (i2)<strlen(input); i2++){ 
+    //if(input[i2] == ' ') {printf("input[i2] = space\n");}//i2--; continue;} 
+    if(input[i2] == '.') {is_float2 = true; dot_index2=i2;}
+    //printf("input[i2] = %c\n", input[i2]);
+  }
+  i2=i2-1;
+  //printf("i2 = %d\n", i2);
+  
+
+  if(is_float1 == false){
+    int1 = list_to_int(i1, input,0);
+
+    if(is_float2 == false){
+      int2 = list_to_int(i2,input,i1+2);//printf("a = %d\tb = %d\n", int1, int2);
+      switch(operation){
+        case '+': output = int1+int2; break;
+        case '-': output = int1-int2;break;
+        case '*': output = int1*int2;break;
+        case '/': output = (float)int1/int2; break;
+        default: break;
+      }
+    }
+    else{
+      real2 = list_to_real(dot_index2-1, dot_index2, i2, input, i1+2);//printf("a = %d\tb = %g\n", int1, real2);
+      switch(operation){
+        case '+': output = int1+real2; break;
+        case '-': output = int1-real2;break;
+        case '*': output = int1*real2;break;
+        case '/': output = int1/real2; break;
+        default: break;
+      }
+    }
+  }
+  else{
+    real1 = list_to_real(dot_index1-1, dot_index1, i1, input,0);
+    if(is_float2 == false){
+      int2 = list_to_int(i2,input,i1+2);//printf("a = %g\tb = %d\n", real1, int2);
+      switch(operation){
+        case '+': output = real1+int2; break;
+        case '-': output = real1-int2;break;
+        case '*': output = real1*int2;break;
+        case '/': output = real1/int2; break;
+        default: break;
+      }
+    }
+    else{
+      real2 = list_to_real(dot_index2-1, dot_index2, i2, input, i1+2);//printf("a = %g\tb = %g\n", real1, real2);
+      switch(operation){
+        case '+': output = real1+real2; break;
+        case '-': output = real1-real2;break;
+        case '*': output = real1*real2;break;
+        case '/': output = real1/real2; break;
+        default: break;
+      }
+    }
+  }
+  printf("Output = %g", output);
+  return 0;
+}
