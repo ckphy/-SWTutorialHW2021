@@ -1,0 +1,168 @@
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+
+bool check_num_system(int ns, char n[]){
+  switch(ns){
+    case 10:
+      for(int x=(strlen(n)-1); x>=0; x--){
+        if (n[x] < '0' || n[x] > '9') {
+          printf("Error! That set of number is not a decimal number.");
+          return false;
+        }
+      }
+      return true;
+      break;
+    case 2:
+      for(int x=(strlen(n)-1); x>=0; x--){
+        if (n[x] != '0' && n[x] != '1') {
+          printf("Error! That set of number is not a binary number.");
+          return false;
+        }
+      }
+      return true;
+      break;
+    case 16:
+      for(int x=(strlen(n)-1); x>=0; x--){
+        if (n[x] >= '0' || n[x] <= '9' || n[x] >= 'A' || n[x] <= 'F');
+        else{
+          printf("Error! That set of number is not a hexadecimal number.");
+          return false;
+        }
+      }
+      return true;
+      break;
+    default:
+      return true;
+      break;
+  }
+}
+
+int main() {
+  char n[256]={0},output[256]={0},hex[256]={0},bin[256]={0};
+  int dec=0,ns=0,nns=0,size=0;;
+  printf("Please enter a set of number:\n");
+  scanf("%s",n);
+
+  size = sizeof(n)-1;
+  for(int z=0; z<1000;z++){
+    if(n[0]=='0'){
+      for(int i=0; i<size;i++) n[i]=n[i+1];
+      n[size] = 0;
+      size--;
+    }
+    else break;
+  }
+
+  printf("Please enter the current number system:\n");
+  scanf("%d",&ns);
+  
+  if (check_num_system(ns,n) == false)  return 0;
+
+  printf("Please enter the number system you want the set of number be converted to:\n");
+  scanf("%d",&nns);
+  
+  if(ns == 16){
+    int x = 0;
+    for(int i=(strlen(n)-1),p=0; i>=0; i--,p++){
+      switch(n[i]){
+        case 'A': x = 10; break;
+        case 'B': x = 11; break;
+        case 'C': x = 12; break;
+        case 'D': x = 13;break;
+        case 'E': x = 14;break;
+        case 'F': x = 15;break;  
+        default: x = n[i]-'0'; break;
+      }
+      for(int i=p; i>0; i--){
+        x = 16*x;
+      }
+      dec = dec+x;
+      if(nns == 16){
+        hex[i]=n[i];
+      }
+    }
+    if(nns == 2){
+      int d=0;
+      for(int k=dec;k>1; k=k/2){d++;}
+      for(;d>0;d--,dec=dec/2){
+        bin[d] = dec%2 +'0';
+      }
+      if(n[0] !='0') bin[0]='1';
+      else bin[0]='0';
+    }
+
+  }
+  else if(ns == 10){
+    int x=0;
+    for(int i=(strlen(n)-1),p=0; i>=0; i--,p++){
+      x = n[i]-'0';
+      for(int j=p; j>0; j--){
+        x = x*10;
+      }
+      dec = dec+x;
+    } 
+    if(nns == 2){
+      int d=0;
+      for(int k=dec;k>1; k=k/2){d++;}
+      for(;d>0;d--,dec=dec/2){
+        bin[d] = dec%2 +'0';
+      }
+      bin[0]='1';
+    }
+    else if(nns == 16){
+      int d=0;
+      for(;dec>=16;dec=dec/16){
+        d++;
+      }
+      for(;d>0; d--){
+        switch(dec%16){
+        case 10: hex[d] = 'A'; break;
+        case 11: hex[d] = 'B'; break;
+        case 12: hex[d] = 'C'; break;
+        case 13: hex[d] = 'D'; break;
+        case 14: hex[d] = 'E'; break;
+        case 15: hex[d] = 'F'; break;
+        default: hex[d] = dec%16; break;
+        }
+      }
+    }
+  }
+  else if(ns == 2){
+    int x=0;
+    for(int i=(strlen(n)-1),p=0; i>=0; i--,p++){
+      x=n[i]-'0';
+      for(int j=p; j>0; j--){
+        x=x*2;
+      }
+      dec = dec+x;
+    }
+    for(int i=(strlen(n)-1),p=0; i>=0; i--,p++){
+      if(nns == 2)
+        bin[i]=n[i];
+      else if(nns == 16){
+        int d=0;
+        for(;dec>=16;dec=dec/16){
+          d++;
+        }
+        for(;d>0; d--){
+          switch(dec%16){
+          case 10: hex[d] = 'A'; break;
+          case 11: hex[d] = 'B'; break;
+          case 12: hex[d] = 'C'; break;
+          case 13: hex[d] = 'D'; break;
+          case 14: hex[d] = 'E'; break;
+          case 15: hex[d] = 'F'; break;
+          default: hex[d] = dec%16; break;
+          }
+        }
+      }
+    }
+  }
+  else return 0;
+
+  if(nns == 2){printf("Output = %s",bin);}
+  else if(nns == 10){printf("Output = %d",dec);}
+  else {printf("Output = %s",hex);}
+  return 0;
+}
