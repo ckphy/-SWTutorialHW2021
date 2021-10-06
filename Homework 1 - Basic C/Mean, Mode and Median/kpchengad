@@ -19,36 +19,45 @@ void sort(int list[], int n){
 int main() {
   printf("Enter a number to append to the number set. Enter \"\\\" to stop appending.\n");
 
-  char c[256] = {0};
+  char s[256] = {0};
   int list[256] = {0}, i=0, n=0;
 
-  do{
-    scanf("%s", c);
-
+  while(s[0] !='/'){
+    scanf(" %s", s);
     int x=0, dec=0;
-    for(int i=(strlen(c)-1),p=0; i>=0; i--,p++){
-      x = c[i]-'0';
+    for(int i=(strlen(s)-1),p=0; i>=0; i--,p++){
+      x = s[i]-'0';
       for(int j=p; j>0; j--){
         x = x*10;
       }
       dec = dec+x;
     }
-
-    list[i] = dec;
-    if(c[0] !='/')  i++;
-
-  }while(c[0] !='/');
+    list[i] = dec; 
+    if(s[0] !='/')  i++;
+  }
   int mode[256]={0};
   float mean=0, median=0, total=0;
   n = i;
   sort(list,n);
-
+  
   for(int j=0; j<n; j++){
     total = total + list[j];
-  }
+  } 
   mean = total/(n);
 
-  int mc=0, k=0, nom=0;
+  int kinds = 0; int kind[256] = {0}; 
+  for(int i=0;i<n; i++){
+    bool update = false;
+    for(int j=0; j<=kinds; j++){
+      if (kinds == 0) { kind[0]=list[i]; update = true;}
+      else if(list[i] == kind[j]) {break;}
+      else if(j==kinds) {kind[kinds] = list[i]; update = true;}
+      else continue;
+    }
+    if(update) kinds++;
+  }
+
+  int mc=0, k=0, nom=0; bool all_is_mode = true;
   for(; k<n ; k++){
     int c=0;
     for(int i=0; i<n ; i++){
@@ -57,7 +66,7 @@ int main() {
     if(c==mc){
       bool repeat = false;
       for(int i=0; i<nom; i++){
-        if (mode[i]==list[k]) repeat = true;
+        if (list[k]==mode[i]) repeat = true;
       }
       if(repeat == false){
         mode[nom] = list[k];
@@ -65,9 +74,11 @@ int main() {
       }
     }
     else if(c>mc){
+      if (k>0) {all_is_mode = false;}
       mc=c; nom=1;
       mode[0]= list[k];
     }
+    else all_is_mode = false;
   }
 
   if(n%2 == 1)
@@ -79,11 +90,15 @@ int main() {
 
   printf("Mean = %g\n", mean);
   printf("Mode = ");
-  for(int i=0; i<nom; i++){
-    if((i+1)==nom)
-      printf("%d\n",mode[i]);
-    else
-      printf("%d, ",mode[i]);
+
+  if(all_is_mode) {printf("No mode\n");}
+  else{
+    for(int i=0; i<nom; i++){
+      if((i+1)==nom)
+        printf("%d\n",mode[i]);
+      else
+        printf("%d, ",mode[i]);
+    }
   }
   printf("Median = %g", median);
   return 0;
