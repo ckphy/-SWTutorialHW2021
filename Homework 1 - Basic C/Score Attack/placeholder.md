@@ -1,7 +1,3 @@
-# Upload your Homework here
- 
-### Please upload your code here
-
 #include <stdio.h>
 #include <string.h>
 #include <stdbool.h>
